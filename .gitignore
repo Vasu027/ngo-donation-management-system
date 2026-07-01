@@ -1,0 +1,24 @@
+# Compiled class files
+**/target/
+**/*.class
+
+# Log files
+**/*.log
+
+# IDEs and editors
+**/.idea/
+**/.vscode/
+**/*.iml
+**/*.ipr
+**/*.iws
+**/.classpath
+**/.project
+**/.settings/
+**/bin/
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# Package wrapper files (optional to ignore, but usually kept)
+# .mvn/wrapper/maven-wrapper.jar

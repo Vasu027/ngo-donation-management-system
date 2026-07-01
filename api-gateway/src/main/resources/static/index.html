@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NGO & Donation Management Portal</title>
+  <!-- Load Premium Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=2">
+</head>
+<body>
+  <header>
+    <span>NGO & Donation Portal</span>
+    <div id="user-profile" class="hidden">
+      <span id="username-badge"></span>
+      <span id="role-badge" class="badge"></span>
+      <button id="logout-btn" onclick="logout()">Logout</button>
+    </div>
+  </header>
+  
+  <nav id="main-nav" class="hidden">
+    <button id="dashboard-btn" class="tab-btn active" onclick="showSection('dashboard-section', this)">
+      <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2v-4zM14 16a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2v-4z" /></svg>
+      Dashboard
+    </button>
+    <button id="ngo-btn" class="tab-btn" onclick="showSection('ngo-section', this)">
+      <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg>
+      NGOs
+    </button>
+    <button id="donation-btn" class="tab-btn" onclick="showSection('donation-section', this)">
+      <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+      Donations
+    </button>
+    <button id="admin-btn" class="tab-btn hidden" onclick="showSection('admin-section', this)">
+      <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
+      Admin Panel
+    </button>
+  </nav>
+
+  <div class="container">
+    <!-- Authentication Card -->
+    <div id="auth-section" class="card">
+      <h2 id="auth-title">Sign In</h2>
+      <form id="authForm" onsubmit="handleAuthSubmit(event)">
+        <input type="text" id="authUsername" placeholder="Username" required />
+        <input type="password" id="authPassword" placeholder="Password" required />
+        
+        <div id="signup-fields" class="hidden">
+          <input type="email" id="authEmail" placeholder="Email Address" />
+          <select id="authRole" onchange="toggleRegNoField()">
+            <option value="DONOR">Donor</option>
+            <option value="NGO">NGO</option>
+          </select>
+          <input type="text" id="authNgoName" placeholder="NGO Official Name" style="display: none;" />
+          <input type="text" id="authNgoCause" placeholder="NGO Primary Cause (e.g. Education)" style="display: none;" />
+          <input type="text" id="authNgoRegNo" placeholder="NGO Registration Number (e.g. NGO123)" style="display: none;" />
+        </div>
+
+        <button type="submit" id="authSubmitBtn" class="action">Sign In</button>
+      </form>
+      <p id="auth-toggle-text">Don't have an account? <a href="#" onclick="toggleAuthMode(event)">Sign Up</a></p>
+    </div>
+
+    <!-- Dashboard Section -->
+    <div id="dashboard-section" class="card hidden">
+      <h2>
+        <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" style="width:24px;height:24px;"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+        Overview Dashboard
+      </h2>
+      <div class="kpi-grid">
+        <div class="kpi-card purple">
+          <div class="kpi-info">
+            <h3>Total Donations</h3>
+            <div id="kpi-donations-val" class="val">$0</div>
+          </div>
+          <div class="kpi-icon">
+            <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" style="width:24px;height:24px;"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+          </div>
+        </div>
+        <div class="kpi-card teal">
+          <div class="kpi-info">
+            <h3>Registered NGOs</h3>
+            <div id="kpi-ngos-val" class="val">0</div>
+          </div>
+          <div class="kpi-icon">
+            <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" style="width:24px;height:24px;"><path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg>
+          </div>
+        </div>
+        <div class="kpi-card emerald">
+          <div class="kpi-info">
+            <h3>Your Status</h3>
+            <div id="kpi-status-val" class="val" style="font-size:1.3rem; margin-top:0.4rem;">ACTIVE</div>
+          </div>
+          <div class="kpi-icon">
+            <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" style="width:24px;height:24px;"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:2rem;">
+        <h3 style="font-size:1.2rem; margin-bottom:1rem; color:var(--text-secondary);">Recent Platform Activity</h3>
+        <table style="border: none;">
+          <thead>
+            <tr><th>Activity Description</th><th>Time/Status</th></tr>
+          </thead>
+          <tbody id="activityFeed">
+            <tr><td colspan="2" style="color:var(--text-secondary); text-align:center; padding:1.5rem;">No recent activities found.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- NGO Section -->
+    <div id="ngo-section" class="card hidden">
+      <h2>
+        <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" style="width:24px;height:24px;"><path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" /></svg>
+        Registered NGOs
+      </h2>
+      <form id="ngoForm">
+        <input type="text" id="ngoName" placeholder="NGO Name" required />
+        <input type="text" id="ngoRegNo" placeholder="Registration Number (e.g. NGO123)" required />
+        <input type="text" id="ngoCause" placeholder="Cause" required />
+        <button type="submit" class="action">Add NGO</button>
+      </form>
+      <div id="ngoGrid" class="grid-container"></div>
+    </div>
+
+    <!-- Donation Section -->
+    <div id="donation-section" class="card hidden">
+      <h2>
+        <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" style="width:24px;height:24px;"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+        Donations Portal
+      </h2>
+      <form id="donationForm">
+        <input type="number" id="donation-amount" placeholder="Amount ($)" required />
+        <select id="donation-ngo" required>
+          <option value="">Select NGO</option>
+        </select>
+        <button type="submit" class="action">Add Donation</button>
+      </form>
+      
+      <div style="margin-top:2rem;">
+        <h3 style="font-size:1.1rem; margin-bottom:1rem; color:var(--text-secondary);">Transaction Records</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Donor</th>
+              <th>Amount</th>
+              <th>NGO Reg No</th>
+              <th>NGO Name</th>
+              <th>Date</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="donationTable"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Admin Panel Section -->
+    <div id="admin-section" class="card hidden">
+      <h2>
+        <svg fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" style="width:24px;height:24px;"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
+        Admin Verification Dashboard
+      </h2>
+      <table>
+        <thead>
+          <tr>
+            <th>User ID</th>
+            <th>Username</th>
+            <th>Email</th>
+            <th>NGO Reg No</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="pendingNgoTable"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Toast notifications -->
+  <div id="toast-container"></div>
+
+  <script src="app.js?v=2"></script>
+</body>
+</html>
